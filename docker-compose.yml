@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16.3
+    environment:
+      POSTGRES_DB: ${DB_NAME:-go-metrics}"
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - ./db/postgresql/:/var/lib/postgresql/data/
+      - ./scripts/init_postgres.sh:/docker-entrypoint-initdb.d/init_postgres.sh
+    ports:
+      - "5051:5432"
+    networks:
+      - default
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:8
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "habrpguser@habr.com"
+      PGADMIN_DEFAULT_PASSWORD: "pgadminpwd4habr"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    volumes:
+      - ./db/pgadmin/:/var/lib/pgadmin
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+

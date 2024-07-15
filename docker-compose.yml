@@ -5,12 +5,11 @@ services:
     image: postgres:16.3
     container_name: go-metrics-db
     environment:
-      POSTGRES_DB: ${DB_NAME:-go-metrics}"
-      POSTGRES_USER: ${DB_USERNAME:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_NAME:-go_metrics_db}
+      - POSTGRES_USER=${DB_USERNAME:-go_metrics_user}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-go_metrics_pass}
     volumes:
       - ./db/postgresql/:/var/lib/postgresql/data/
-      - ./scripts/init_postgres.sh:/docker-entrypoint-initdb.d/init_postgres.sh
     ports:
       - "5051:5432"
     networks:
